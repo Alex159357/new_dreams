@@ -1,5 +1,7 @@
 import Flutter
 import UIKit
+import RealityKit
+import ARKit
 
 class FLNativeViewFactory: NSObject, FlutterPlatformViewFactory {
     private var messenger: FlutterBinaryMessenger
@@ -41,13 +43,43 @@ class FLNativeView: NSObject, FlutterPlatformView {
         return _view
     }
 
-    func createNativeView(view _view: UIView){
-        _view.backgroundColor = UIColor.white
-        let nativeLabel = UILabel()
-        nativeLabel.text = "NATIVE SWIFT IU SCREEN"
-        nativeLabel.textColor = UIColor.blue
-        nativeLabel.textAlignment = .center
-        nativeLabel.frame = CGRect(x: 50, y: 150, width: 180, height: 48.0)
-        _view.addSubview(nativeLabel)
+    func createNativeView(view _view: UIView) {
+        let previewController = QLPreviewController()
+        previewController.dataSource = self
+        _view.backgroundColor = .black
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            _view.parentViewController?.present(previewController, animated: true, completion: nil)
+        }
+    }
+}
+
+extension FLNativeView: QLPreviewControllerDataSource {
+    func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+        let url = Bundle.main.url(forResource: "SavyonARv", withExtension: "usdz")!
+        return url as QLPreviewItem
+    }
+    
+    func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
+        return 1
+    }
+}
+
+extension FLNativeView: QLPreviewControllerDelegate {
+    func previewControllerDidDismiss(_ controller: QLPreviewController) {
+        
+    }
+}
+
+extension UIView {
+    var parentViewController: UIViewController? {
+        var parentResponder: UIResponder? = self.next
+        while parentResponder != nil {
+            if let viewController = parentResponder as? UIViewController {
+                return viewController
+            }
+            parentResponder = parentResponder?.next
+        }
+        return nil
     }
 }
