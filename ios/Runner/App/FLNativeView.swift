@@ -49,7 +49,11 @@ class FLNativeView: NSObject, FlutterPlatformView {
         _view.backgroundColor = .black
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            _view.parentViewController?.present(previewController, animated: true, completion: nil)
+            _view.parentViewController?.present(previewController, animated: true) {
+                if let navigationBar = previewController.view.subviews.first?.subviews[1] as? UINavigationBar {
+                    navigationBar.isHidden = true
+                }
+            }
         }
     }
 }
