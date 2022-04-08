@@ -22,7 +22,39 @@ class _WebViewModuleState extends State<WebViewModule> {
 
   late WebViewController _controller;
   final String localStorageCookie = '''{"id":119,"user_info":{"id":4}}''';
+  final String viewType = '<platform-view-type>';
+  final Map<String, dynamic> creationParams = <String, dynamic>{};
 
+
+
+  Future<void> _showNative()async{
+    return showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return UiKitView(
+            onPlatformViewCreated: (v)async{
+              await Future.delayed(Duration(seconds: 1));
+              Navigator.of(context).pop();
+            },
+            viewType: viewType,
+            layoutDirection: TextDirection.ltr,
+            creationParams: creationParams,
+            creationParamsCodec: const StandardMessageCodec(),
+          );
+        }
+    );
+  }
+  
+  
+  Widget _getButton(){
+    return FutureBuilder(
+      future: Future.delayed(Duration(seconds: 45)),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) { 
+      if(snapshot.connectionState == ConnectionState.done){
+        return Container(margin: EdgeInsets.only(top: 70, left: 15), child: GestureDetector(onTap: _showNative, child:  Icon(Icons.view_in_ar_outlined, color: Colors.black, size: 20,),));
+      }else return Container();
+    },);
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -31,19 +63,12 @@ class _WebViewModuleState extends State<WebViewModule> {
 
     print(widget.link+"/minimap=$isIos");
 
+
+    
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          leading: GestureDetector(
-            onTap: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NativeNavigatio()),
-              );
-            },
-            child: Text("TEST"),
-          ),
-        ),
+        floatingActionButton: Platform.isIOS? _getButton() : Container(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
         body: WillPopScope(
           onWillPop:()=> onWillPop(context), child: Scaffold(
           body: Container(

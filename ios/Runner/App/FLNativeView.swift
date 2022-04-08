@@ -1,6 +1,5 @@
 import Flutter
 import UIKit
-import RealityKit
 import ARKit
 
 class FLNativeViewFactory: NSObject, FlutterPlatformViewFactory {
