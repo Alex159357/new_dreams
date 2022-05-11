@@ -8,7 +8,7 @@
 	</array>
 	<key>com.apple.developer.parent-application-identifiers</key>
 	<array>
-		<string>$(AppIdentifierPrefix)com.alex.developer</string>
+		<string>$(AppIdentifierPrefix)com.dreams.savyonview.bmby</string>
 	</array>
 </dict>
 </plist>
